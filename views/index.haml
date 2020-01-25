@@ -1,0 +1,60 @@
+!!!
+%html
+  %head
+    %title Brewaucracy Label Printer
+    %link{rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Space+Mono:400,400i,700,700i&display=swap'}
+    %link{rel: 'stylesheet', type: 'text/css', href: 'styles.css'}
+    %meta{name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1'}
+
+  %body
+    %h1 Label Printer
+    %form{method: 'POST'}
+      %fieldset
+        %legend Label Details
+        %label{for: 'presets'}
+          %span Preset
+          %select{name: 'presets', id: 'presets'}
+            %option{value: '' } -- Select --
+            %option{value: 'Philsner'} Philsner
+        %label{for: 'abv'} 
+          %span ABV
+          %input{type: 'text', name: 'abv', value: session['abv'].to_s }
+        %label{for: 'vol'} 
+          %span Vol
+          %input{type: 'text', name: 'vol', value: session['vol'] ||'330'} ml
+        %label{for: 'batch'} 
+          %span Batch
+          %input{type: 'text', name: 'batch', value: session['batch'] || "PH-#{Time.now.strftime("%y%m")}01" }
+        %label{for: 'bottled'} 
+          %span Bottled
+          %input{type: 'text', name: 'bottled', value: session['bottled'] || Time.now.strftime("%m/%Y") }
+        %label{for: 'bb'} 
+          %span Best Before
+          %input{type: 'text', name: 'bb', value: session['bb'] || (Time.now + 12.months).strftime("%m/%Y")}
+      %fieldset
+        %legend Print Parameters
+        %label{for: 'left'}
+          %span Left Offset
+          %input{type: 'number', name: 'left', value: session['left'] || '40'} dots
+          .icon.left
+        %label{for: 'bottom'}
+          %span Bottom Offset
+          %input{type: 'number', name: 'bottom', value: session['bottom'] || '545'} dots
+          .icon.bottom
+        %label{for: 'quantity'}
+          %span Quantity
+          %input{type: 'number', name: 'quantity', value: session['quantity'] || '300'}
+        %label{for: 'pause-every'}
+          %span Pause every
+          %input{type: 'number', name: 'pause-every', value: session['pause-every'] || '20'}
+        %label{for: 'printer'}
+          %span Printer
+          %select{name: 'printer'}
+            - @printers.each do |printer|
+              %option{value: printer}= printer
+      .buttons
+        %input{type: 'submit', name: 'action', value: 'Proof'}
+        %input{type: 'submit', name: 'action', value: 'Print'}
+
+          
+      

@@ -1,0 +1,102 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 20px;
+  font-family: 'Space Mono', monospace;
+}
+
+h1 {
+  font-weight: normal;
+  text-transform: uppercase;
+}
+
+fieldset {
+  max-width: 400px;
+  padding: 10px 20px 20px 20px; 
+  margin-bottom: 30px;
+  border: 1px solid red;
+}
+
+legend {
+  color: red;
+}
+
+input {
+  width: 60px;
+  padding: 5px;
+  margin-right: 4px;
+}
+
+input[name="batch"],
+input[name="bottled"],
+input[name="bb"] {
+  width: 100px;
+}
+
+
+label {
+  display: block;
+  font-size: 13px;
+  line-height: 2.4em;
+  color: #999;
+}
+
+label > span {
+  display: inline-block;
+  width: 130px;
+  text-align: right;
+  color: #444;
+}
+
+label > span:after {
+  content: ':'
+}
+
+label[for="bottom"],
+label[for="left"] {
+  background-color: #f0f0f0;
+  margin-bottom: 18px;
+  padding: 10px;
+  padding-left: 0;
+}
+
+div.icon {
+  width: 102px;
+  height: 45px;
+  background-color: green;
+  margin-left: 138px;
+  margin-top: 8px;
+}
+
+div.icon.left {
+  background: top / cover no-repeat url('icons.svg');
+}
+
+div.icon.bottom {
+  background: left -45px / cover no-repeat url('icons.svg');
+}
+
+div.buttons {
+  max-width: 400px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+input[type="submit"] {
+  -webkit-appearance: none;
+  background-color: grey;
+  border: none;
+  padding: 12px 24px;
+  font-size: 13px;
+  width: auto;
+  text-transform: uppercase;
+  color: white;
+  font-weight: bold;
+  font-family: 'Space Mono';
+}
+
+input[type="submit"][value="Print"] {
+  background-color: green;
+}
