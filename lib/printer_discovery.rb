@@ -28,9 +28,9 @@ class PrinterDiscovery
     #
     # It would be easier to just send a broadcast UDP packet,
     # but ruby-snmp gem doesn't let us do that.
-    max_fh = Process.getrlimit(:NOFILE)
+    available = Process.getrlimit(:NOFILE)[0]
     required = [ 256, @network.len + 64 ].max
-    Process.setrlimit(:NOFILE, required) if max_fh < required
+    Process.setrlimit(:NOFILE, required) if available < required
   end
 
   def start
