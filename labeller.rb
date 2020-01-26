@@ -9,10 +9,22 @@ require './lib/print_client'
 set :haml, :format => :html5
 enable :sessions
 
-printers = PrinterDiscovery.discover!
+printers = []
+semaphore = Mutex.new
+
+thread = Thread.new do |t|
+  while true
+    semaphore.synchronize do
+      printers = PrinterDiscovery.discover!
+    end
+    sleep 120
+  end
+end
 
 get '/' do
-  @printers = printers
+  semaphore.synchronize do
+    @printers = printers.dup
+  end
   haml :index
 end
 
