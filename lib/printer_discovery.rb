@@ -1,10 +1,8 @@
-require 'socket'
 require 'netaddr'
 require 'timeout'
 require 'snmp'
 
 class PrinterDiscovery
-  PORT = 9100
   OID = '1.3.6.1.2.1.25.3.2.1.3.1'.freeze
 
   attr_reader :printers
@@ -13,9 +11,6 @@ class PrinterDiscovery
     def discover!
       pd = new
       pd.start
-
-      # Hack to get rid of any lingering file handles
-      GC.start; GC.start; GC.start
 
       pd.printers
     end
@@ -28,9 +23,11 @@ class PrinterDiscovery
     @network    = NetAddr::IPv4Net.parse("#{@ip}/#{@mask}")
     @printers   = []
 
-    # The GC.start above mostly takes care of this
-    # but just in case, as for a /24 we do intend on opening
-    # 256 file handles
+    # We need lots of file handles to send packets
+    # to the entire /24.
+    #
+    # It would be easier to just send a broadcast UDP packet,
+    # but ruby-snmp gem doesn't let us do that.
     Process.setrlimit(:NOFILE, [ 256, @network.len + 64 ].max)
   end
 
