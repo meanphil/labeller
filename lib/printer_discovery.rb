@@ -21,7 +21,7 @@ class PrinterDiscovery
   end
 
   def initialize
-    @private_if = Socket.getifaddrs.detect { |ifaddr| ifaddr.addr.ipv4_private? }
+    @private_if = Socket.getifaddrs.detect { |ifaddr| ifaddr.addr.try(:ipv4_private?) }
     @ip         = @private_if.addr.ip_address
     @mask       = @private_if.netmask.ip_address
     @network    = NetAddr::IPv4Net.parse("#{@ip}/#{@mask}")
