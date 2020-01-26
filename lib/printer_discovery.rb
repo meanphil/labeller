@@ -1,10 +1,11 @@
 require 'socket'
 require 'netaddr'
 require 'timeout'
+require 'snmp'
 
 class PrinterDiscovery
   PORT = 9100
-  MAGIC_COMNAND = "! U1 getvar \"device.languages\"\r\n".freeze
+  OID = '1.3.6.1.2.1.25.3.2.1.3.1'.freeze
 
   attr_reader :printers
 
@@ -78,22 +79,21 @@ class PrinterDiscovery
   end
 
   def check(ip)
-    s = nil
+    ip_s = ip.to_s
     Timeout.timeout(10) do
-      s = TCPSocket.new(ip.to_s, PORT)
-      s.write(MAGIC_COMNAND)
-      response = s.recv(12)
-      s.close
-      # If we speak ZPL, then we can use this printer!
-      return ip.to_s if(response =~ /zpl/)
+      SNMP::Manager.open(host: ip_s) do |manager|
+        response = manager.get(OID)
+        response.each_varbind do |vb|
+          return ip_s if vb.value.to_s =~ /Zebra/
+        end
+      end
     end
     nil
   rescue Timeout::Error
     nil
-  rescue => e
+  rescue SNMP::RequestTimeout
     nil
-  ensure
-    s.close if s
-    s = nil
+  rescue Errno::EHOSTUNREACH, Errno::EHOSTDOWN
+    nil
   end
 end
